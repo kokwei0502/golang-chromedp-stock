@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kokwei0502/golang-malaysia-stock-analysis/controllers"
+	"github.com/kokwei0502/golang-chromedp-stock/controllers"
 )
 
 var (

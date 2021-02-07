@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kokwei0502/golang-malaysia-stock-analysis/controllers"
-	"github.com/kokwei0502/golang-malaysia-stock-analysis/routers"
+	"github.com/kokwei0502/golang-chromedp-stock/controllers"
+	"github.com/kokwei0502/golang-chromedp-stock/routers"
 )
 
 func main() {
