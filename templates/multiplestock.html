@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/multiplestock.css">
+    <title>Document</title>
+  </head>
+  <body>
+    {{$stocklist := .StockListing}}
+    <section class="stocklisting-info">
+      <div id="draw-charts"></div>
+    </section>
+
+    
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+    var datalist = {{$stocklist}};
+    console.log(datalist);
+      var dateToday = new Date().toISOString().slice(0, 10);
+      var dateMinus = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().slice(0, 10);
+      google.charts.load("current", {
+        callback: function () {
+          for (var i = 0; i < datalist.length; i++) {
+            console.log(i);
+            var obj = datalist[i].HistPrice;
+            console.log(obj)
+            var data = new google.visualization.DataTable();
+          data.addColumn("date", "Date");
+          data.addColumn("number", "Low");
+          data.addColumn("number", "Open");
+          data.addColumn("number", "Close");
+          data.addColumn("number", "High");
+          data.addColumn("number", "Volume");
+          for (var index in obj) {
+          data.addRows([
+            [new Date(obj[index].Date), obj[index].Low, obj[index].Open, obj[index].Close, obj[index].High, obj[index].Volume],
+          ]);
+        };
+        // console.log(datalist[i].CompanyInfo.Company);
+        //   var options = {
+        //     title: datalist[i].CompanyInfo.Company,
+        //     width: 400,
+        //     height: 300,
+        //   };
+            var dashboardcontainer = document.getElementById("draw-charts").appendChild(document.createElement("div"));
+            var dashboard = new google.visualization.Dashboard(dashboardcontainer);
+            var chartcontainer = dashboardcontainer.appendChild(document.createElement("div"));
+            var slidercontainer = dashboardcontainer.appendChild(document.createElement("div"));
+            var dateRangeSlider = new google.visualization.ControlWrapper({
+              controlType: "ChartRangeFilter",
+              containerId: slidercontainer,
+              //   'view': {'columns': [0,1,2,3,4]},
+              options: {
+                width: '100%',
+                height:50,
+                filterColumnIndex: 0,
+              },
+              state: {
+                // setup the slider range, default 1 year data
+                range: {
+                  start: new Date(dateMinus),
+                  end: new Date(dateToday),
+                },
+              },
+              ui: {
+                chartType: "LineChart",
+                chartOptions: {
+                  height:'50',
+                  width:"100%",
+                  enableInteractivity: false,
+                  chartArea: { height: "100%", width:"100%" },
+                  legend: { position: "none" },
+                  hAxis: { textPosition: "in" },
+                  vAxis: {
+                    textPosition: "none",
+                    gridlines: { color: "none" },
+                  },
+                  // 'hAxis': {'baselineColor': 'none'}
+                },
+              },
+            });
+            var stockChart = new google.visualization.ChartWrapper({
+              chartType: "ComboChart",
+              containerId: chartcontainer,
+              //   'view': {'columns': [0, 1, 2, 3, 4]},
+              options: {
+                width: 1000,
+                // 'height': 800,
+                legend:'none',
+                title: datalist[i].CompanyInfo.Company,
+                // legend: "right",
+                height: 500,
+                candlestick: {
+                  risingColor: { stroke: "yellowgreen", fill: "yellowgreen" },
+                  fallingColor: { stroke: "red", fill: "red" },
+                  colors: ["black"],
+                },
+                series: {
+                  0: {
+                    type: "candlesticks",
+                    targetAxisIndex: 0,
+                  },
+                  1: {
+                    type: "bars",
+                    targetAxisIndex: 5,
+                    color: "orange",
+                  },
+                },
+                vAxes: {
+                  0: {
+                    minValue: 0,
+                    // maxValue: 10,
+                    label: "Y1",
+                  },
+                  1: {
+                    minValue: 0,
+                    // maxValue: 60000,
+                    label: "Y2",
+                  },
+                },
+              },
+            });
+
+            // Establish dependencies, declaring that 'filter' drives 'pieChart',
+            // so that the pie chart will only display entries that are let through
+            // given the chosen slider range.
+            dashboard.bind([dateRangeSlider], stockChart);
+            dashboard.draw(data);
+
+
+
+
+            var ratioList = datalist[i].GeneralRatio
+            var tableData = new google.visualization.DataTable();
+            tableData.addColumn('string', 'Title');
+            tableData.addColumn('string', 'Data');
+            for (var rat in ratioList){
+            tableData.addRows([
+          [ratioList[rat].Title, ratioList[rat].Content],
+        ]);}
+
+  var table = new google.visualization.Table(dashboardcontainer.appendChild(document.createElement("div")));
+  table.draw(tableData, {showRowNumber: false, width: '100%', height: '100%'});
+
+
+
+
+
+
+          }
+        },
+        packages: ["corechart", "controls", "table"],
+      });
+    </script>
+  </body>
+</html>

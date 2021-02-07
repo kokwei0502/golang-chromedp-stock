@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/css/stockinfo.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <section class="content-container">
+      <div class="general-info">
+        {{$stockinfo := .StockInvestingInfo.CompanyInfo}} {{$stockratios := .StockInvestingInfo.GeneralRatio}}
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Company</td>
+              <td>{{$stockinfo.Company}}</td>
+            </tr>
+            <tr>
+              <td>Market</td>
+              <td>{{$stockinfo.Market}}</td>
+            </tr>
+            <tr>
+              <td>StockCode</td>
+              <td>{{$stockinfo.StockCode}}</td>
+            </tr>
+            <tr>
+              <td>Sector</td>
+              <td>{{$stockinfo.Sector}}</td>
+            </tr>
+            <tr>
+              <td>Industry</td>
+              <td>{{$stockinfo.Industry}}</td>
+            </tr>
+            <tr>
+              <td>MarketCap</td>
+              <td>{{$stockinfo.MarketCap}}</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            {{range $v := $stockratios}}
+            <tr>
+              <td>{{$v.Title}}</td>
+              <td>{{$v.Content}}</td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+      <div class="hist-price">
+        {{$stockhisprice := .StockInvestingInfo.HistPrice}}
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Close</th>
+              <th>Open</th>
+              <th>High</th>
+              <th>Low</th>
+              <th>Volume</th>
+              <th>Changes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range $v := $stockhisprice}}
+            <tr>
+              <td>{{$v.Date}}</td>
+              <td>{{$v.Close}}</td>
+              <td>{{$v.Open}}</td>
+              <td>{{$v.High}}</td>
+              <td>{{$v.Low}}</td>
+              <td>{{$v.Volume}}</td>
+              <td>{{$v.Change}}</td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div id="dashboard_div">
+      <!--Divs that will hold each control and chart-->
+
+      <div id="chart_div" style="height: 500px"></div>
+      <div id="filter_div" style="height: 50px"></div>
+    </div>
+    <div id="draw-charts"></div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      var dateToday = new Date().toISOString().slice(0,10);
+      var dateMinus =  new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().slice(0,10);
+
+            // Load the Visualization API and the controls package.
+            google.charts.load('current', {'packages':['corechart', 'controls']});
+
+            // Set a callback to run when the Google Visualization API is loaded.
+            google.charts.setOnLoadCallback(drawDashboard);
+
+            // Callback that creates and populates a data table,
+            // instantiates a dashboard, a range slider and a pie chart,
+            // passes in the data and draws it.
+            function drawDashboard() {
+
+              // Create our data table.
+              {{$stockhisprice := .StockInvestingInfo.HistPrice}}
+              var mydata = new google.visualization.DataTable();
+              mydata.addColumn('date', 'Date');
+              mydata.addColumn('number', 'Low');
+              mydata.addColumn('number', 'Open');
+              mydata.addColumn('number', 'Close');
+              mydata.addColumn('number', 'High');
+              mydata.addColumn('number', 'Volume');
+              mydata.addRows([
+              {{range $v := $stockhisprice}}
+
+              [new Date({{$v.Date}}), {{$v.Low}}, {{$v.Open}}, {{$v.Close}}, {{$v.High}}, {{$v.Volume}}],
+              {{end}}
+              ]);
+
+              // Create a dashboard.
+              var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard_div'));
+
+              // Create a range slider, passing some options
+              var dateRangeSlider = new google.visualization.ControlWrapper({
+                'controlType': 'ChartRangeFilter',
+                'containerId': 'filter_div',
+              //   'height':500,
+              //   'view': {'columns': [0,1,2,3,4]},
+                'options': {
+                  'filterColumnIndex': 0
+                },
+                'state': { // setup the slider range, default 1 year data
+                  range: {
+                              start: new Date(dateMinus),
+                              end: new Date(dateToday)
+                          }
+                },
+                'ui': {
+                'chartType': 'LineChart',
+                'height':100,
+                'chartOptions': {
+                  'enableInteractivity': false,
+                  'chartArea': {'height': '50%'},
+                  'legend': {'position': 'none'},
+                  'hAxis': {'textPosition': 'in'},
+                  'vAxis': {
+                              'textPosition': 'none',
+                              'gridlines': {'color': 'none'}
+                          }
+                  // 'hAxis': {'baselineColor': 'none'}
+                },}
+              });
+              var stockChart = new google.visualization.ChartWrapper({
+                'chartType': 'ComboChart',
+                'containerId': 'chart_div',
+              //   'view': {'columns': [0, 1, 2, 3, 4]},
+                'options': {
+                  // 'width': 300,
+                  // 'height': 800,
+                  'legend': 'right',
+                  'height':500,
+                  candlestick: {
+            risingColor: {stroke: 'yellowgreen', fill: 'yellowgreen'},
+            fallingColor: {stroke: 'red', fill:'red'},
+            colors:['black']
+          },
+                  series: {
+                  0: {
+                      type: 'candlesticks',
+                      targetAxisIndex: 0
+                  },
+                  1: {
+                      type: 'bars',
+                      targetAxisIndex: 5,
+                      color:'orange'
+                  }
+              },
+              vAxes: {
+                  0: {
+                      minValue: 0,
+                      // maxValue: 10,
+                      label: 'Y1'
+                  },
+                  1: {
+                      minValue: 0,
+                      // maxValue: 60000,
+                      label: 'Y2'
+                  }
+              }
+
+                }
+              });
+
+              // Establish dependencies, declaring that 'filter' drives 'pieChart',
+              // so that the pie chart will only display entries that are let through
+              // given the chosen slider range.
+              dashboard.bind([dateRangeSlider], stockChart);
+
+              // Draw the dashboard.
+              dashboard.draw(mydata);
+            }
+    </script>
+  </body>
+</html>

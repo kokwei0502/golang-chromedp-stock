@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="../static/css/stocklisting.css">
+</head>
+<body>
+    <section class="stocklist">
+        <form action="/" method="post">
+            <button type="submit" name="sort-submit" value="sort-reset">Reset</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Company<br>
+                        <button type="submit" name="sort-submit" value="sort-company-A-Z">Sort A-Z</button>
+                        <button type="submit" name="sort-submit" value="sort-company-Z-A">Sort Z-A</button> 
+                    </th>
+                    <th>Symbol</th>
+                    <th>
+                        Market Cap<br>
+                    <button type="submit" name="sort-submit" value="sort-marketcap-A-Z">Sort A-Z</button>
+                    <button type="submit" name="sort-submit" value="sort-marketcap-Z-A">Sort Z-A</button> 
+                </th>
+                    <th>Sector<br>
+                        {{$SectorList := .CategoryList.ListSector}}
+                        
+                        <select name="sort-sector"  onchange="this.form.submit();" >
+                            {{range $v := $SectorList}}
+                            <option  value="{{$v}}">{{$v}}</option>
+                            {{end}}
+                          </select>
+                    </th>
+                    <th>Industry<br>
+                        {{$IndustryList := .CategoryList.ListIndustry}}
+                        
+                        <select name="sort-industry" onchange="this.form.submit();" >
+                            {{range $v := $IndustryList}}
+                            <option  value="{{$v}}">{{$v}}</option>
+                            {{end}}
+                          </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{$StockListData := .StockListingData.StockList}}
+                {{range $k, $v := $StockListData}}
+                
+                <tr>
+                    <td><button type="submit" name="company-info" value="{{$v.Symbol}}@{{$v.StockURL}}">{{$k}},{{$v.Company}}</button></td>
+                    <td>{{$v.Symbol}}</td>
+                    <td>{{$v.MarketCap}}</td>
+                    <td><button type="submit" name="sector-info" value="{{$v.Sector}}">{{$v.Sector}}</button></td>
+                    <td><button type="submit" name="industry-info" value="{{$v.Industry}}">{{$v.Industry}}</button></td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </form>
+    </section>
+
+</body>
+</html>

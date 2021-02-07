@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Merriweather", serif;
+}
+
+section.stocklist {
+  margin: 5%;
+  background-color: rgb(247, 247, 247);
+  color: rgb(82, 82, 82);
+}
+
+section.stocklist form table {
+  width: 100%;
+}
+
+section.stocklist table thead tr th {
+  background-color: rgb(247, 247, 247);
+  font-size: 1.5rem;
+  font-weight: 900;
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px solid rgb(170, 170, 170);
+  box-shadow: 1px 2px 3px rgb(124, 124, 124);
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+
+section.stocklist table tbody tr td {
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 5px;
+  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(170, 170, 170);
+  box-shadow: 1px 2px 3px rgb(124, 124, 124);
+}
+
+section.stocklist table tbody tr td button:nth-child(1) {
+  font-size: 1.3rem;
+  border-style: none;
+  font-weight: 700;
+  width: 100%;
+  cursor: pointer;
+  outline-style: none;
+}
+
+section.stocklist table tbody tr td button:nth-child(1):hover {
+  color: blue;
+  text-decoration: underline;
+}

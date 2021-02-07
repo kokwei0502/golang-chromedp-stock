@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+}
+
+section.content-container {
+  margin: 5%;
+  height: 70vh;
+  /* background-color: aqua; */
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  /* color: rgb(0, 255, 0); */
+  /* align-items: flex-start; */
+}
+
+section.content-container div.hist-price,
+section.content-container div.general-info {
+  /* background-color: beige; */
+  flex: 1 40%;
+}
+
+section.content-container div.hist-price {
+  height: 100%;
+  overflow: auto;
+}
+
+section.content-container table {
+  width: 100%;
+  text-align: center;
+}
+
+section.content-container > div.hist-price > table {
+  position: relative;
+}
+
+section.content-container > div.hist-price > table > thead tr th {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+section.content-container table > thead tr th {
+  /* border: 1px solid black; */
+  border-bottom: 1.5px solid rgb(58, 58, 58);
+  box-shadow: 1px 3px 5px rgb(58, 58, 58);
+  padding: 0.3rem;
+}
+
+section.content-container > table:nth-child(1) > tbody > tr td {
+  padding: 0.3rem;
+}
+
+#filter_div {
+  margin: 0;
+  padding: 0;
+}
